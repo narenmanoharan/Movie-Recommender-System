@@ -1,6 +1,7 @@
 import os
 import math
 import time
+import config
 from pyspark.mllib.recommendation import ALS
 
 large_dataset_path = '/dataset/movies_large/'
@@ -54,13 +55,13 @@ training_RDD, validation_RDD, test_RDD = small_ratings_data.randomSplit([6, 2, 2
 validation_for_predict_RDD = validation_RDD.map(lambda x: (x[0], x[1]))
 test_for_predict_RDD = test_RDD.map(lambda x: (x[0], x[1]))
 
-seed = 5
-iterations = 10
-regularization_parameter = 0.1
-ranks = [4, 8, 12]
-errors = [0, 0, 0]
-err = 0
-tolerance = 0.02
+seed = config.seed
+iterations = config.iterations
+regularization_parameter = config.regularization_parameter
+ranks = config.ranks
+errors = config.errors
+err = config.err
+tolerance = config.tolerance
 
 min_error = float('inf')
 best_rank = -1
