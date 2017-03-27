@@ -35,31 +35,25 @@ small_ratings_data = small_ratings_raw_data \
     .map(lambda line: line.split(",")) \
     .map(lambda tokens: (tokens[0], tokens[1], tokens[2])).cache()
 
+# Creating the small dataset Dataframe
 small_movies_file = os.path.join(small_dataset_path, 'movies.csv')
-
 small_movies_raw_data = sc.textFile(small_movies_file)
 small_movies_raw_data_header = small_movies_raw_data.take(1)[0]
-
-small_movies_data = small_movies_raw_data \
-    .filter(lambda line: line != small_movies_raw_data_header) \
-    .map(lambda line: line.split(",")) \
-    .map(lambda tokens: (tokens[0], tokens[1])) \
-    .cache()
-
-print(small_movies_data.take(3))
-
 small_movies_raw_data = sc.textFile(small_movies_file)
-
 data = small_movies_raw_data.filter(lambda line: line != small_movies_raw_data_header).map(
     lambda line: line.split(',')). \
     map(lambda x: Row(movieId=int(x[0]), title=(x[1]).encode('utf-8')))
 dataDF = sqlContext.createDataFrame(data)
-dataDF.registerTempTable("d")
 
+# Displaying the dataframe schema
+print(dataDF.select("movieId", "title").show())
+
+# Validation datasets
 training_RDD, validation_RDD, test_RDD = small_ratings_data.randomSplit([6, 2, 2], seed=0L)
 validation_for_predict_RDD = validation_RDD.map(lambda x: (x[0], x[1]))
 test_for_predict_RDD = test_RDD.map(lambda x: (x[0], x[1]))
 
+# ALS algorithm configuration
 seed = config.seed
 iterations = config.iterations
 regularization_parameter = config.regularization_parameter
@@ -68,12 +62,12 @@ errors = config.errors
 err = config.err
 tolerance = config.tolerance
 
+# ALS algorithm training step
 min_error = float('inf')
 best_rank = -1
 best_iteration = -1
 for rank in ranks:
-    model = ALS.train(training_RDD, rank, seed=seed, iterations=iterations,
-                      lambda_=regularization_parameter)
+    model = ALS.train(training_RDD, rank, seed=seed, iterations=iterations, lambda_=regularization_parameter)
     predictions = model.predictAll(validation_for_predict_RDD).map(lambda r: ((r[0], r[1]), r[2]))
     rates_and_predictions = validation_RDD.map(lambda r: ((int(r[0]), int(r[1])), float(r[2]))).join(predictions)
     error = math.sqrt(rates_and_predictions.map(lambda r: (r[1][0] - r[1][1]) ** 2).mean())
