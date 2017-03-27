@@ -6,24 +6,30 @@ from pyspark import SparkContext
 from pyspark.sql import SQLContext, Row
 from pyspark.mllib.recommendation import ALS
 
+# Adding paths to the datasets
 large_dataset_path = 'dataset/movies_large/'
 small_dataset_path = 'dataset/movies_small/'
 
+# Getting the SparkContext
 sc = SparkContext()
+# Initializing the SQLContext
 sqlContext = SQLContext(sc)
 
+# Creating the Dataframe for the small dataset using SQLContext
 small_ratings_file = os.path.join(small_dataset_path, 'ratings.csv')
 small_ratings_raw_data = sc.textFile(small_ratings_file)
 small_ratings_raw_data_header = small_ratings_raw_data.take(1)[0]
 small_ratings_raw_data_DF = sqlContext.read.csv(small_ratings_file, header=True, inferSchema=True)
 small_ratings_raw_data_DF.show(10)
 
+# Creating dataframe for visualization in temp table 'D'
 data = sc.textFile(small_ratings_file)
 data = data.filter(lambda line: line != small_ratings_raw_data_header).map(lambda line: line.split(',')). \
     map(lambda x: Row(userId=int(x[0]), movieId=int(x[1]), rating=float(x[2]), timestamp=str(x[3])))
 dataDF = sqlContext.createDataFrame(data)
-dataDF.registerTempTable("d")
+dataDF.registerTempTable("D")
 
+# Creating RDD using only userID, movieID, rating since we don't need timestamp
 small_ratings_data = small_ratings_raw_data \
     .filter(lambda line: line != small_ratings_raw_data_header) \
     .map(lambda line: line.split(",")) \
