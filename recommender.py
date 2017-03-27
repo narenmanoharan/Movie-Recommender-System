@@ -3,7 +3,7 @@ import math
 import time
 import config
 from pyspark import SparkContext
-from pyspark.sql import SQLContext, Row
+from pyspark.sql import SQLContext, Row, SparkSession
 from pyspark.mllib.recommendation import ALS
 
 # Adding paths to the datasets
@@ -14,6 +14,12 @@ small_dataset_path = 'dataset/movies_small/'
 sc = SparkContext()
 # Initializing the SQLContext
 sqlContext = SQLContext(sc)
+# Initializing Spark Session
+spark = SparkSession \
+    .builder \
+    .appName("netflix-recommendation-system") \
+    .getOrCreate()
+
 
 # Creating the Dataframe for the small dataset using SQLContext
 small_ratings_file = os.path.join(small_dataset_path, 'ratings.csv')
@@ -28,6 +34,9 @@ data = data.filter(lambda line: line != small_ratings_raw_data_header).map(lambd
     map(lambda x: Row(userId=int(x[0]), movieId=int(x[1]), rating=float(x[2]), timestamp=str(x[3])))
 dataDF = sqlContext.createDataFrame(data)
 dataDF.registerTempTable("D")
+
+# Displaying the temp table "D"
+print(spark.sql("Select * from D").show())
 
 # Creating RDD using only userID, movieID, rating since we don't need timestamp
 small_ratings_data = small_ratings_raw_data \
