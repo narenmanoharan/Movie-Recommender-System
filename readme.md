@@ -6,7 +6,7 @@
 
 - Recommend n number of movies according to the users preference.
 
-##Specifications
+## Specifications
 
 - Python 2.7.13
 - PySpark 2.1.0
