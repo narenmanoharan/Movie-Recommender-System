@@ -2,22 +2,21 @@ import os
 import math
 import time
 import config
+from pyspark import SparkContext
+from pyspark.sql import SQLContext, Row
 from pyspark.mllib.recommendation import ALS
 
-large_dataset_path = '/dataset/movies_large/'
-small_dataset_path = '/dataset/movies_small/'
+large_dataset_path = 'dataset/movies_large/'
+small_dataset_path = 'dataset/movies_small/'
+
+sc = SparkContext()
+sqlContext = SQLContext(sc)
 
 small_ratings_file = os.path.join(small_dataset_path, 'ratings.csv')
 small_ratings_raw_data = sc.textFile(small_ratings_file)
 small_ratings_raw_data_header = small_ratings_raw_data.take(1)[0]
-
-small_ratings_raw_data_DF = sqlContext.load(
-    source="com.databricks.spark.csv",
-    header='true',
-    inferSchema='true',
-    path=
-    small_ratings_file)
-small_ratings_raw_data_DF.show(6)
+small_ratings_raw_data_DF = sqlContext.read.csv(small_ratings_file, header=True, inferSchema=True)
+small_ratings_raw_data_DF.show(10)
 
 data = sc.textFile(small_ratings_file)
 data = data.filter(lambda line: line != small_ratings_raw_data_header).map(lambda line: line.split(',')). \
@@ -107,7 +106,7 @@ complete_movies_data = complete_movies_raw_data \
 
 complete_movies_titles = complete_movies_data.map(lambda x: (int(x[0]), x[1]))
 
-print("There are %s movies in the complete dataset" % (complete_movies_titles.count()))
+print("There are %s movies in the large dataset" % (complete_movies_titles.count()))
 
 complete_ratings_file = os.path.join(large_dataset_path, 'ratings.csv')
 complete_ratings_raw_data = sc.textFile(complete_ratings_file)
@@ -119,7 +118,7 @@ complete_ratings_data = complete_ratings_raw_data \
     .map(lambda tokens: (int(tokens[0]), int(tokens[1]), float(tokens[2]))) \
     .cache()
 
-print('There are %s recommendations in the complete dataset' % (complete_ratings_data.count()))
+print('There are %s recommendations in the large dataset' % (complete_ratings_data.count()))
 
 
 def get_counts_and_averages(ID_and_ratings_tuple):
