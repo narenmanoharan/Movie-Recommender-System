@@ -20,7 +20,7 @@
 
 How to install spark?
 
-- Follow the provided link to a guide to install [Spark](https://github.com/KristianHolsheimer/pyspark-setup-guide)
+- Follow the link to a guide on how to install [Spark](https://github.com/KristianHolsheimer/pyspark-setup-guide)
 
 How to install the dependencies?
 
