@@ -32,5 +32,6 @@ How to execute the program?
 
 ## TODO
 
-- Added config option for user to added their movie preferences
+- ~~Added config option for user to added their movie preferences~~
 - Web Interface using Flask
+
