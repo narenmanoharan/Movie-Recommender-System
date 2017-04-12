@@ -1,6 +1,6 @@
-## Netflix Recommendation System
+## Movie Recommender System
 
-**Netflix Recommendation System** is simple recommender systems for movies built using PySpark.
+**Movie Recommender System** is simple recommender systems for movies built using PySpark.
 
 **This system was designed with the following purposes in mind:**
 
