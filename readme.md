@@ -1,4 +1,4 @@
-## Movie Recommender System
+# Movie Recommender System
 
 **Movie Recommender System** is simple recommender system for movies built using PySpark.
 
@@ -8,7 +8,7 @@
 - Learn more about Spark and MLlib
 - To learn collaborative filtering in action
 
-## Specifications
+### Specifications
 
 - Python 2.7.13
 - PySpark 2.1.0
@@ -18,7 +18,7 @@
 - [MovieLens dataset](https://grouplens.org/datasets/movielens/)
 
 
-## Getting Started
+### Getting Started
 
 How to install spark?
 
@@ -32,12 +32,12 @@ How to execute the program?
 
 - ```python recommender.py```
 
-## TODO
+### TODO
 
 - ~~Added config option for user to added their movie preferences~~
 - Web Interface using Flask
 
-## Project Details
+# Project Details
 
 **To make recommendations in a real world application, let’s take our intuition and apply it to a machine learning algorithm called Collaborative Filtering.**
 
