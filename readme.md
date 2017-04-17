@@ -1,6 +1,6 @@
 # Movie Recommender System
 
-**Movie Recommender System** is simple recommender system for movies built using PySpark.
+**Movie Recommender System** is simple recommender system for movies built with PySpark.
 
 **This system was designed with the following purposes in mind:**
 
